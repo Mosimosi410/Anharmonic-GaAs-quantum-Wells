@@ -45,3 +45,40 @@ for iter = 1:100
 end
 
 % --- Sau khi hội tụ, có thể gọi lệnh vẽ hình tại đây ---
+% --- Lệnh vẽ hình cho Hình 2a (Nd = B = F = 0) ---
+
+% 1. Thiết lập cửa sổ đồ thị
+figure('Color', 'w', 'Name', 'Figure 2a: Nd=B=F=0');
+hold on; grid on;
+
+% 2. Vẽ tiềm năng giam giữ (Confining Potential)
+% Chuyển z về hệ tọa độ nm để khớp với bài báo
+z_plot = z - (L/2); 
+plot(z_plot, V_conf, 'b', 'LineWidth', 2.5, 'DisplayName', 'Confining potential');
+
+% 3. Vẽ 4 mức năng lượng đầu tiên và hàm mật độ xác suất tương ứng
+colors = {'r', 'g', 'k', 'm'};
+labels = {'Ground state', '1st excited', '2nd excited', '3rd excited'};
+scale_factor = 500; % Hệ số để hiển thị hàm sóng trên thang năng lượng
+
+for i = 1:4
+    % Vẽ đường mức năng lượng Ei (đường thẳng đứt nét)[cite: 1]
+    line([min(z_plot), max(z_plot)], [Ei(i), Ei(i)], ...
+        'Color', colors{i}, 'LineStyle', '--', 'LineWidth', 1, 'HandleVisibility', 'off');
+    
+    % Tính và vẽ mật độ xác suất |psi|^2[cite: 1]
+    % Hàm sóng được dịch lên mức năng lượng tương ứng để giống Hình 2a[cite: 1]
+    prob_density = (psi(:,i).^2 / (dz_nm*1e-9)) * (dz_nm*1e-9 * scale_factor) + Ei(i);
+    plot(z_plot, prob_density, 'Color', colors{i}, 'LineWidth', 2, 'DisplayName', labels{i});
+end
+
+% 4. Định dạng đồ thị theo tiêu chuẩn của bài báo[cite: 1]
+xlabel('z (nm)', 'FontSize', 12, 'FontWeight', 'bold');
+ylabel('Energy (meV)', 'FontSize', 12, 'FontWeight', 'bold');
+title('Anharmonic GaAs QW (N_d = B = F = 0)', 'FontSize', 14);
+
+% Giới hạn trục tọa độ tương ứng với Hình 2a trong tài liệu[cite: 1]
+axis([-7.5 7.5 -500 1000]); 
+legend('Location', 'northeast', 'FontSize', 10);
+
+hold off;
